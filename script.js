@@ -75,15 +75,16 @@
     }
   });
 
-  // 5 → page turn: "made your wish, yet?" → "my wish"
+  // 5 → "made your wish, yet?" slowly dissolves to reveal "my wish" (same page position)
   $('wishBtn').addEventListener('click', () => {
     if (state.busy || state.step !== 2) return;
-    state.focus = 'R'; camera();
-    flip(4, true, () => { leaves[4].style.visibility = 'hidden'; });
-    // the turning sheet's back is plain paper; fade it out so Page 4 stays visible on the left
-    setTimeout(() => { leaves[4].style.transition = 'transform 1.15s cubic-bezier(.645,.045,.355,1),opacity .5s'; leaves[4].style.opacity = 0; }, 800);
-    state.step = 3; camera();
-    setTimeout(() => { $('closeBtn').disabled = false; $('closeHint').style.cssText = 'opacity:1;animation:pulse 2.4s ease-in-out infinite'; }, 1400);
+    state.step = 3; state.focus = 'R'; camera();
+    $('wishBtn').disabled = true;
+    const el = leaves[4];
+    el.style.transition = 'opacity 2.2s ease-in-out';
+    requestAnimationFrame(() => { el.style.opacity = 0; });
+    setTimeout(() => { el.style.visibility = 'hidden'; }, 2300);
+    setTimeout(() => { $('closeBtn').disabled = false; $('closeHint').style.cssText = 'opacity:1;animation:pulse 2.4s ease-in-out infinite'; }, 2000);
   });
 
   // 6 → close to back cover
