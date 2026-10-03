@@ -1,0 +1,74 @@
+:root{--pw:400px;--ph:500px;--t:1.05s;--ease:cubic-bezier(.55,.06,.25,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#2a201a}
+body{background:radial-gradient(ellipse at 50% 45%,#4a3a2f 0%,#2a201a 60%,#17110d 100%)}
+#scene{position:fixed;inset:0;overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#book{position:absolute;left:50%;top:50%;width:calc(var(--pw)*2);height:var(--ph);margin-left:calc(var(--pw)*-1);margin-top:calc(var(--ph)*-.5);
+  perspective:calc(var(--pw)*4.2);transition:transform var(--t) var(--ease)}
+.noanim,.noanim *{transition:none!important}
+#shadow{position:absolute;top:1%;height:98%;left:50%;width:50%;box-shadow:0 18px 50px rgba(0,0,0,.55),0 4px 14px rgba(0,0,0,.4);
+  transition:left var(--t) var(--ease),width var(--t) var(--ease);border-radius:2px}
+#book[data-s="0"] #shadow{left:50%;width:50%}
+#book[data-s="1"] #shadow,#book[data-s="2"] #shadow,#book[data-s="3"] #shadow,#book[data-s="4"] #shadow{left:0;width:100%}
+#book[data-s="5"] #shadow{left:0;width:50%}
+#spine{position:absolute;left:50%;top:0;height:100%;width:calc(var(--pw)*.07);margin-left:calc(var(--pw)*-.035);pointer-events:none;z-index:200;
+  background:linear-gradient(90deg,transparent,rgba(50,30,10,.16) 42%,rgba(40,24,8,.3) 50%,rgba(50,30,10,.16) 58%,transparent);transition:opacity .6s}
+#spine::after{content:"";position:absolute;left:50%;top:3%;height:94%;width:1px;opacity:.28;
+  background:repeating-linear-gradient(180deg,#5a4026 0 7px,transparent 7px 14px)}
+#book[data-s="0"] #spine,#book[data-s="5"] #spine{opacity:0}
+.leaf{position:absolute;left:50%;top:0;width:50%;height:100%;transform-origin:left center;transform-style:preserve-3d;
+  transition:transform var(--t) var(--ease);box-shadow:1px 0 0 #d2c5ae,2px 1px 0 #cbbda4,3px 1px 0 #c3b59b}
+.leaf.flipped{transform:rotateY(-180deg)}
+.face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#e9dfcf}
+.face.back{transform:rotateY(180deg)}
+.face .pg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;-webkit-user-drag:none}
+.face::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(45,28,10,.2),rgba(45,28,10,0) 5.5%)}
+.face.back::after{background:linear-gradient(270deg,rgba(45,28,10,.2),rgba(45,28,10,0) 5.5%)}
+.face::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:50;opacity:0;background:rgba(30,18,8,.38)}
+.leaf.turn .face::before{animation:fs var(--t) ease-in-out}
+@keyframes fs{0%,100%{opacity:0}50%{opacity:1}}
+button{font:inherit;color:inherit;padding:0;border:0;background:none;cursor:pointer}
+button:focus-visible{outline:2px solid #c0562f;outline-offset:2px}
+.facebtn,.wishbtn{position:absolute;inset:0;width:100%;height:100%;z-index:5}
+.wishbtn.off{pointer-events:none}
+.wish2{opacity:0;transition:opacity 1.4s ease-in-out}
+.wish2.on{opacity:1}
+/* page 2: envelope + letter (kept inside safe area) */
+.env{position:absolute;inset:0;transform:scale(.8);transform-origin:42% 50%}
+.env img{position:absolute;pointer-events:none;top:0;height:100%}
+.env .closed{left:0;width:100%}
+.env .open{left:-3.44%;width:93.44%}
+.envbtn{position:absolute;left:9%;top:9%;width:70%;height:82%;z-index:4;border-radius:6px}
+.envbtn:not(:disabled)::after{content:"";position:absolute;inset:6%;border-radius:8px;animation:ring 2.6s ease-out infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(120,80,40,.0)}20%{box-shadow:0 0 0 0 rgba(120,80,40,.16)}100%{box-shadow:0 0 0 16px rgba(120,80,40,0)}}
+.letterbox{position:absolute;left:6.5%;top:8.5%;width:83%;height:83%;display:none;z-index:3}
+.letterbox.show{display:block}
+.letterbox img{width:100%;height:100%;display:block;pointer-events:none}
+.letterbox.done{box-shadow:0 6px 18px rgba(60,40,20,.35),0 1px 3px rgba(0,0,0,.3)}
+/* page 3: candles */
+.cd{position:absolute;width:56.75%;height:39%;z-index:3}
+.cd img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cd .flame{transform-origin:49% 31%;animation:flick 1.9s ease-in-out infinite;transition:opacity .35s ease,transform .5s ease}
+@keyframes flick{0%,100%{transform:scale(1,1) rotate(0)}35%{transform:scale(.97,1.04) rotate(.8deg)}70%{transform:scale(1.02,.97) rotate(-.7deg)}}
+.cd.out .flame{opacity:0;transform:scale(.3,.1);animation:none}
+.cd .smoke{position:absolute;left:44.5%;top:20%;width:9%;height:11%;border-radius:50%;opacity:0;filter:blur(2px);pointer-events:none;
+  background:radial-gradient(circle,rgba(125,110,100,.6),rgba(125,110,100,0) 70%)}
+.cd.out .smoke{animation:smoke 1.9s ease-out}
+@keyframes smoke{0%{opacity:0;transform:scale(.6)}15%{opacity:.75}100%{opacity:0;transform:translate(30%,-300%) scale(2.8)}}
+.cd button{position:absolute;left:34%;width:32%;top:6%;height:66%;border-radius:40px}
+.cd.out button{pointer-events:none}
+#book.nudge .cake{animation:nudge .45s}
+@keyframes nudge{30%{transform:translateX(-5px)}60%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){:root{--t:.4s}}
+/* only the face that is actually showing receives taps */
+.leaf.flipped .face.front,.leaf:not(.flipped) .face.back{pointer-events:none}
+.cd{pointer-events:none}
+.leaf:not(.flipped) .cd:not(.out) button{pointer-events:auto}
+
+.env{pointer-events:none}
+.env.b{z-index:1;opacity:0}.env.f{z-index:3;opacity:0}.env.c{z-index:4}
+.letterbox{z-index:2}.envbtn{z-index:5}
+/* back cover: restart */
+.again{position:absolute;left:50%;top:73%;transform:translateX(-50%);z-index:5;padding:.75em 1.5em;color:#f3e8da;border:1px solid rgba(243,232,218,.55);border-radius:999px;
+  font:600 calc(var(--pw)*.026)/1 'PT Sans','Helvetica Neue',Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;background:rgba(255,255,255,.04);transition:background .3s,border-color .3s}
+.again:hover{background:rgba(255,255,255,.15);border-color:#f3e8da}
